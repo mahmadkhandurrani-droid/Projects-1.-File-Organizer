@@ -1,0 +1,118 @@
+# A real code like a bank app
+Written instead of copy paste 
+
+FILE_NAME = "accounts.txt"
+
+# Load accounts from file
+def load_accounts():
+    accounts = {}
+    try:
+        with open(FILE_NAME, "r") as file:
+            for line in file:
+                username, password, balance = line.strip().split(",")
+                accounts[username] = {
+                    "password": password,
+                    "balance": float(balance)
+                }
+    except FileNotFoundError:
+        pass
+    return accounts
+
+# Save accounts to file
+def save_accounts(accounts):
+    with open(FILE_NAME, "w") as file:
+        for username, data in accounts.items():
+            file.write(f"{username},{data['password']},{data['balance']}\n")
+
+# Register new user
+def register(accounts):
+    username = input("Username: ")
+    if username in accounts:
+        print("User exists...")
+        return
+
+    password = input("Enter password: ")
+    accounts[username] = {"password": password, "balance": 0.0}
+    save_accounts(accounts)
+    print("♦ Account Created Successfully")
+
+# Login user
+def login(accounts):
+    username = input("Username: ")
+    password = input("Password: ")
+
+    if username in accounts and accounts[username]["password"] == password:
+        print(f"Logged in as")
+        return username
+    else:
+        print("Invalid credentials")
+        return None
+
+# Banking menu
+def banking_menu(user, accounts):
+    while True:
+        print("\n1. Deposit")
+        print("2. Withdraw")
+        print("3. Check Balance")
+        print("4. Log out")
+
+        choice = input("Enter choice: ").strip()
+
+        if choice == "1":
+        
+                amount = float(input("Amount: "))
+
+                accounts[user]["balance"] += amount
+                save_accounts(accounts)
+                print(f"Money deposited.")
+            
+
+        elif choice == "2":
+            
+                amount = float(input("Amount to withdraw:"))
+                if amount > accounts[user]["balance"]:
+                    print("Insufficient balance!")
+                else:
+                    accounts[user]["balance"] -= amount
+                    save_accounts(accounts)
+                    print(f"Money withdrawn.")
+            
+
+        elif choice == "3":
+            print(f"Balance: {accounts[user]['balance']}")
+
+        elif choice == "4":
+            print("Logging out...")
+            break
+
+        else:
+            print("Invalid option")
+
+# Main program
+def main():
+    accounts = load_accounts()
+
+    while True:
+        print("\n1. Register")
+        print("2. Login")
+        print("3. Exit")
+
+        choice = input("Choice: ")
+
+        if choice == "1":
+            register(accounts)
+
+        elif choice == "2":
+            user = login(accounts)
+            if user:
+                banking_menu(user, accounts)
+
+        elif choice == "3":
+            print("Goodbye")
+            break
+
+        else:
+            print("Invalid option")
+
+main()
+
