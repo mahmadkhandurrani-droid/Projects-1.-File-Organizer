@@ -1,2 +1,9 @@
-# Projects-1.-File-Organizer
+# Projects-1.-File Organizer
 This repository contains small Python projects I created as a beginner to practice coding and showcase my skills.
+import os
+
+folder = input("Enter folder path: ")
+for filename in os.listdir(folder):
+    if filename.endswith(".txt"):
+        os.rename(os.path.join(folder, filename), os.path.join(folder, "TextFiles_"+filename))
+print("Files organized!")
